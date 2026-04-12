@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "llm-prompt-injection-defense"
+version = "0.1.0"
+description = "Production patterns for LLM prompt injection defense: input sanitization, output validation, prompt firewall, canary tokens"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.25.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.11.0",
+    "mypy>=1.15.0",
+    "bandit>=1.8.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["patterns"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "PERF", "PTH", "SIM", "RUF", "TRY", "EM", "TC", "S", "N"]
+ignore = ["ANN", "D", "ERA", "T20", "COM812", "ISC001", "E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "PLR2004", "SLF001", "BLE001", "PLC0415", "S105", "S106", "F841", "ARG002", "RUF059"]
+"patterns/*" = ["S105", "S106", "PLR2004", "UP042", "SLF001", "SIM105", "PLR0913", "N818"]
+"examples/*" = ["T201", "S106"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
+module = "examples.*"
+disallow_untyped_defs = false
+disallow_untyped_calls = false
