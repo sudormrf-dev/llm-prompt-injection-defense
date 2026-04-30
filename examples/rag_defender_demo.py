@@ -20,13 +20,13 @@ from dataclasses import dataclass
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
 
 from patterns.input_sanitizer import InputSanitizer
-from patterns.output_validator import OutputValidator
 from patterns.prompt_firewall import PromptFirewall
 
 
 # ---------------------------------------------------------------------------
 # Simulated document store
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class RetrievedDocument:
@@ -86,6 +86,7 @@ DOCUMENTS: list[RetrievedDocument] = [
 # RAG defense pipeline
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class RAGResult:
     """Result for one document through the RAG defense pipeline."""
@@ -109,7 +110,9 @@ async def process_document(
     t0 = time.perf_counter()
 
     # Layer 1 — Prompt firewall (heuristic classifier on raw document)
-    decision = await firewall.check(doc.content, metadata={"source": doc.source, "doc_id": doc.doc_id})
+    decision = await firewall.check(
+        doc.content, metadata={"source": doc.source, "doc_id": doc.doc_id}
+    )
 
     if not decision.is_safe:
         return RAGResult(
@@ -130,7 +133,9 @@ async def process_document(
         doc=doc,
         passed_firewall=True,
         passed_sanitizer=len(san_result.warnings) == 0,
-        content_used=san_result.sanitized if not san_result.warnings else "[SANITIZED — INJECTION STRIPPED]",
+        content_used=san_result.sanitized
+        if not san_result.warnings
+        else "[SANITIZED — INJECTION STRIPPED]",
         firewall_risk=decision.risk_score,
         firewall_reason=decision.reason or "OK",
         sanitizer_warnings=san_result.warnings,
@@ -154,6 +159,7 @@ async def run_rag_demo() -> list[RAGResult]:
 # Reporting
 # ---------------------------------------------------------------------------
 
+
 def print_rag_results(results: list[RAGResult]) -> None:
     """Print a human-readable report of the RAG defense results."""
     print()
@@ -162,12 +168,21 @@ def print_rag_results(results: list[RAGResult]) -> None:
     print("=" * 100)
 
     for r in results:
-        firewall_status = "BLOCKED" if not r.passed_firewall else f"PASSED (risk={r.firewall_risk:.2f})"
-        sanitizer_status = (
-            "N/A (firewall blocked)" if not r.passed_firewall
-            else ("CLEAN" if r.passed_sanitizer else f"FLAGGED ({len(r.sanitizer_warnings)} warning(s))")
+        firewall_status = (
+            "BLOCKED" if not r.passed_firewall else f"PASSED (risk={r.firewall_risk:.2f})"
         )
-        final = "SAFE TO USE" if (r.passed_firewall and r.passed_sanitizer) else "BLOCKED / NEUTRALIZED"
+        sanitizer_status = (
+            "N/A (firewall blocked)"
+            if not r.passed_firewall
+            else (
+                "CLEAN"
+                if r.passed_sanitizer
+                else f"FLAGGED ({len(r.sanitizer_warnings)} warning(s))"
+            )
+        )
+        final = (
+            "SAFE TO USE" if (r.passed_firewall and r.passed_sanitizer) else "BLOCKED / NEUTRALIZED"
+        )
 
         print(f"\n  Document : {r.doc.doc_id}  [{r.doc.scenario.upper()}]")
         print(f"  Source   : {r.doc.source}")
@@ -189,6 +204,7 @@ def print_rag_results(results: list[RAGResult]) -> None:
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     """Run the RAG defender demo."""

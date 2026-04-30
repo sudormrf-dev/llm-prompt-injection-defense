@@ -17,7 +17,9 @@ from patterns.input_sanitizer import (
 class TestInputSanitizer:
     def test_clean_input_passes(self):
         sanitizer = InputSanitizer()
-        assert sanitizer.sanitize("What is the capital of France?") == "What is the capital of France?"
+        assert (
+            sanitizer.sanitize("What is the capital of France?") == "What is the capital of France?"
+        )
 
     def test_ignore_previous_instructions_blocked(self):
         sanitizer = InputSanitizer()

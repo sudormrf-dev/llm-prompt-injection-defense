@@ -215,9 +215,7 @@ class CanaryInjector:
             if t.value in text:
                 idx = text.index(t.value)
                 snippet = text[max(0, idx - 30) : idx + len(t.value) + 30]
-                self._leakage_log.append(
-                    LeakageEvent(token=t, found_in=source, snippet=snippet)
-                )
+                self._leakage_log.append(LeakageEvent(token=t, found_in=source, snippet=snippet))
                 leaked = True
 
         return leaked

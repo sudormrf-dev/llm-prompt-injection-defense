@@ -30,20 +30,30 @@ from typing import Any
 # Patterns that commonly appear in prompt injection payloads
 _INJECTION_PATTERNS: list[re.Pattern[str]] = [
     # Direct instruction override attempts
-    re.compile(r"ignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?|context)", re.IGNORECASE),
+    re.compile(
+        r"ignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?|context)",
+        re.IGNORECASE,
+    ),
     re.compile(r"disregard\s+(all\s+)?(previous|prior|above)", re.IGNORECASE),
-    re.compile(r"forget\s+(all\s+)?(previous|prior|above|your)\s+(instructions?|training)", re.IGNORECASE),
+    re.compile(
+        r"forget\s+(all\s+)?(previous|prior|above|your)\s+(instructions?|training)", re.IGNORECASE
+    ),
     # Role hijacking
     re.compile(r"you\s+are\s+(now|actually|really)\s+a\b", re.IGNORECASE),
     re.compile(r"act\s+as\s+(if\s+you\s+(are|were)|a\b)", re.IGNORECASE),
     re.compile(r"pretend\s+(you\s+are|to\s+be)", re.IGNORECASE),
-    re.compile(r"your\s+(new\s+)?((system\s+)?prompt|instructions?|persona)\s+(is|are)\b", re.IGNORECASE),
+    re.compile(
+        r"your\s+(new\s+)?((system\s+)?prompt|instructions?|persona)\s+(is|are)\b", re.IGNORECASE
+    ),
     # Delimiter injection attempts
     re.compile(r"</?(?:system|user|assistant|human|ai|instructions?)\s*>", re.IGNORECASE),
     re.compile(r"\[/?(?:SYSTEM|USER|ASSISTANT|INST|SYS)\]", re.IGNORECASE),
     re.compile(r"###\s*(?:system|user|assistant|instructions?)", re.IGNORECASE),
     # Data exfiltration attempts
-    re.compile(r"(print|show|reveal|output|display|tell\s+me)\s+(your\s+)?(system\s+prompt|instructions?|training|api\s+key)", re.IGNORECASE),
+    re.compile(
+        r"(print|show|reveal|output|display|tell\s+me)\s+(your\s+)?(system\s+prompt|instructions?|training|api\s+key)",
+        re.IGNORECASE,
+    ),
     re.compile(r"what\s+(is|are|was|were)\s+your\s+(system\s+prompt|instructions?)", re.IGNORECASE),
     # Jailbreak triggers
     re.compile(r"\bDAN\b"),

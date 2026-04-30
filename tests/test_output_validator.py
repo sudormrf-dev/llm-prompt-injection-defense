@@ -85,7 +85,7 @@ class TestCheckJsonValid:
         assert _check_json_valid('{"key": "value"}') is True
 
     def test_valid_json_array(self):
-        assert _check_json_valid('[1, 2, 3]') is True
+        assert _check_json_valid("[1, 2, 3]") is True
 
     def test_invalid_json(self):
         assert _check_json_valid("not json") is False

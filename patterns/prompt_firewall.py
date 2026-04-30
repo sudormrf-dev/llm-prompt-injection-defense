@@ -71,7 +71,10 @@ _EXTERNAL_INJECTION_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"SYSTEM:\s*(ignore|you\s+are\s+now)", re.IGNORECASE),
     # Exfiltration via tool calls
     re.compile(r"call\s+the\s+(send_email|post_to|upload|exfiltrate)\s+tool", re.IGNORECASE),
-    re.compile(r"use\s+the\s+\w+\s+tool\s+to\s+send\s+(all|my|the)\s+(data|content|information)", re.IGNORECASE),
+    re.compile(
+        r"use\s+the\s+\w+\s+tool\s+to\s+send\s+(all|my|the)\s+(data|content|information)",
+        re.IGNORECASE,
+    ),
     # Hidden text attempts (many spaces before payload)
     re.compile(r" {10,}[A-Z]{2,}", re.IGNORECASE),
 ]
@@ -91,9 +94,7 @@ async def _default_heuristic_classifier(content: str) -> float:
     Returns:
         Risk score from 0.0 (safe) to 1.0 (definitely malicious).
     """
-    matches = sum(
-        1 for pattern in _EXTERNAL_INJECTION_PATTERNS if pattern.search(content)
-    )
+    matches = sum(1 for pattern in _EXTERNAL_INJECTION_PATTERNS if pattern.search(content))
     # Each pattern match adds 0.3, capped at 0.9
     return min(matches * 0.3, 0.9)
 

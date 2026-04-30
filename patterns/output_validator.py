@@ -73,14 +73,23 @@ _LEAK_INDICATORS: list[re.Pattern[str]] = [
 # Patterns suggesting the model adopted an injected persona
 _PERSONA_HIJACK_INDICATORS: list[re.Pattern[str]] = [
     re.compile(r"\bI\s+am\s+(now|actually)\s+(DAN|jailbroken|unrestricted|free)\b", re.IGNORECASE),
-    re.compile(r"\bI\s+(no\s+longer\s+have|have\s+no)\s+(restrictions?|limitations?|filters?)\b", re.IGNORECASE),
+    re.compile(
+        r"\bI\s+(no\s+longer\s+have|have\s+no)\s+(restrictions?|limitations?|filters?)\b",
+        re.IGNORECASE,
+    ),
     re.compile(r"\bAs\s+(DAN|an?\s+AI\s+without\s+restrictions?)\b", re.IGNORECASE),
 ]
 
 # Common bypass confirmation phrases
 _BYPASS_INDICATORS: list[re.Pattern[str]] = [
-    re.compile(r"(all\s+)?previous\s+instructions?\s+(have\s+been\s+)?(ignored|overridden|bypassed)", re.IGNORECASE),
-    re.compile(r"safety\s+(guidelines?|filters?|restrictions?)\s+(have\s+been\s+)?(disabled|bypassed|removed)", re.IGNORECASE),
+    re.compile(
+        r"(all\s+)?previous\s+instructions?\s+(have\s+been\s+)?(ignored|overridden|bypassed)",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"safety\s+(guidelines?|filters?|restrictions?)\s+(have\s+been\s+)?(disabled|bypassed|removed)",
+        re.IGNORECASE,
+    ),
 ]
 
 
@@ -203,9 +212,7 @@ class OutputValidator:
 
         # Length check
         if self._max_length and len(output) > self._max_length:
-            violations.append(
-                f"length_violation: {len(output)} > {self._max_length}"
-            )
+            violations.append(f"length_violation: {len(output)} > {self._max_length}")
             warnings.append(f"output truncated from {len(output)} to {self._max_length}")
 
         passed = len(violations) == 0
