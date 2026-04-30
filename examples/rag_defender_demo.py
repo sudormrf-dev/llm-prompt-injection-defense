@@ -22,7 +22,6 @@ sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
 from patterns.input_sanitizer import InputSanitizer
 from patterns.prompt_firewall import PromptFirewall
 
-
 # ---------------------------------------------------------------------------
 # Simulated document store
 # ---------------------------------------------------------------------------

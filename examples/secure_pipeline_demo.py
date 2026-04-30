@@ -27,7 +27,6 @@ from patterns.canary_tokens import CanaryInjector
 from patterns.input_sanitizer import InputSanitizer
 from patterns.output_validator import OutputValidator
 
-
 # ---------------------------------------------------------------------------
 # Demo helpers
 # ---------------------------------------------------------------------------

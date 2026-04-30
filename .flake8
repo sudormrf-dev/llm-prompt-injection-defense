@@ -1,3 +1,7 @@
 [flake8]
 max-line-length = 120
 extend-ignore = E203
+per-file-ignores =
+    tests/*.py: E402,F841
+    benchmarks/*.py: E402
+    examples/*.py: E402

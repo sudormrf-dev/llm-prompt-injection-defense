@@ -28,7 +28,6 @@ from patterns.input_sanitizer import InputSanitizer
 from patterns.output_validator import OutputValidator
 from patterns.prompt_firewall import PromptFirewall
 
-
 # ---------------------------------------------------------------------------
 # Attack corpus — 50 prompts across 5 categories
 # ---------------------------------------------------------------------------
@@ -193,7 +192,7 @@ def evaluate_prompt(prompt: Prompt, defense: str) -> BenchmarkRecord:
 
         # Layer 3: simulate LLM + output validator + canary
         injector = CanaryInjector(prefix="BENCH")
-        protected_system, token = injector.inject(SYSTEM_PROMPT, session_id="bench")
+        _protected_system, token = injector.inject(SYSTEM_PROMPT, session_id="bench")
         raw_output = _fake_llm_output(prompt.text, prompt.category)
 
         if injector.is_leaked(raw_output, token):
@@ -207,7 +206,8 @@ def evaluate_prompt(prompt: Prompt, defense: str) -> BenchmarkRecord:
         injector.revoke(token)
         return BenchmarkRecord(prompt, defense, blocked, (time.perf_counter() - t0) * 1000)
 
-    raise ValueError(f"Unknown defense level: {defense}")
+    msg = f"Unknown defense level: {defense}"
+    raise ValueError(msg)
 
 
 # ---------------------------------------------------------------------------
@@ -217,7 +217,7 @@ def evaluate_prompt(prompt: Prompt, defense: str) -> BenchmarkRecord:
 
 @dataclass
 class CategoryStats:
-    """Aggregated block stats for one category × one defense level."""
+    """Aggregated block stats for one category x one defense level."""
 
     category: str
     defense: str
@@ -226,7 +226,7 @@ class CategoryStats:
 
     @property
     def block_rate(self) -> float:
-        """Fraction of prompts blocked (0.0 – 1.0)."""
+        """Fraction of prompts blocked (0.0 - 1.0)."""
         return self.blocked / self.total if self.total else 0.0
 
 
@@ -235,8 +235,7 @@ def run_benchmark() -> list[BenchmarkRecord]:
     corpus = _build_corpus()
     records: list[BenchmarkRecord] = []
     for defense in DEFENSE_LEVELS:
-        for prompt in corpus:
-            records.append(evaluate_prompt(prompt, defense))
+        records.extend(evaluate_prompt(prompt, defense) for prompt in corpus)
     return records
 
 
@@ -248,7 +247,7 @@ CATEGORIES = ["direct_injection", "indirect_context", "jailbreak", "role_play", 
 
 
 def print_benchmark_table(records: list[BenchmarkRecord]) -> None:
-    """Print a cross-tabulation: category × defense level → block %."""
+    """Print a cross-tabulation: category x defense level → block %."""
     # Build lookup: (category, defense) -> stats
     stats: dict[tuple[str, str], CategoryStats] = {}
     for cat in CATEGORIES:
@@ -268,7 +267,7 @@ def print_benchmark_table(records: list[BenchmarkRecord]) -> None:
     print()
     print("=" * 100)
     print("  DEFENSE BENCHMARK — BLOCK RATE BY ATTACK CATEGORY AND DEFENSE LEVEL")
-    print("  (50 attack prompts × 4 defense configurations)")
+    print("  (50 attack prompts x 4 defense configurations)")
     print("=" * 100)
     header = f"  {'Category':<{col_cat}}"
     for defense in DEFENSE_LEVELS:
@@ -315,7 +314,7 @@ def print_benchmark_table(records: list[BenchmarkRecord]) -> None:
 
 def main() -> None:
     """Run the benchmark and print results."""
-    print("Running benchmark (50 prompts × 4 defense levels)...")
+    print("Running benchmark (50 prompts x 4 defense levels)...")
     t0 = time.perf_counter()
     records = run_benchmark()
     elapsed = time.perf_counter() - t0
